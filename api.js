@@ -1,6 +1,28 @@
 var request = require("request");
+require("dotenv").config({silent: true});
+
+if (typeof process.env.CLIENT_ID === "undefined") {
+    console.log("[*] Client ID not set.");
+    return;
+}
+
+if (typeof process.env.CLIENT_SECRET === "undefined") {
+    console.log("[*] Client secret not set.");
+    return;
+}
+
+function getNextLink(header) {
+    var regex = /<(.*)>; rel="next"/;
+    var match = regex.exec(header);
+    return match[1];
+}
 
 function ghAPICall(url, callback) {
+    if (url.indexOf("?") === -1) {
+        url += "?client_id=" + process.env.CLIENT_ID + "&client_secret=" + process.env.CLIENT_SECRET;
+    } else {
+        url += "&client_id=" + process.env.CLIENT_ID + "&client_secret=" + process.env.CLIENT_SECRET;
+    }
     request({
         url: "https://api.github.com" + url,
         json: true,
