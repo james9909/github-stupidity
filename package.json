@@ -6,5 +6,9 @@
     "start": "node index.js"
   },
   "author": "James Wang",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.14.0",
+    "request": "^2.74.0"
+  }
 }
