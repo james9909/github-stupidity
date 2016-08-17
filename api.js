@@ -111,8 +111,11 @@ function calculateRepoStupidity(repo, callback) {
 }
 
 function calculateLanguageStupidity(language, callback) {
-    var wait = 20;
-    var callback_data = [];
+    var callback_data = {
+        language: language,
+        repos: []
+    };
+
     ghAPICall("/search/repositories?q=+language:" + language + "&sort=stars&order=desc&per_page=20", function(result) {
         if (typeof result !== "object") {
             callback(result);
@@ -120,9 +123,10 @@ function calculateLanguageStupidity(language, callback) {
         }
 
         var repos = result["items"];
+        var wait = repos.length;
         for (repo in repos) {
             calculateRepoStupidity(repos[repo]["full_name"], function(data) {
-                callback_data.push(data);
+                callback_data["repos"].push(data);
                 if (--wait === 0) {
                     callback(callback_data);
                 }
