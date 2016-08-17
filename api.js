@@ -22,7 +22,7 @@ function ghAPICall(url, callback) {
 
 function getRepoInfo(repo, callback) {
     ghAPICall("/repos/" + repo, function repoInfoCB(result) {
-        if (typeof result !=== "object") {
+        if (typeof result !== "object") {
             callback(result);
             return;
         }
@@ -36,7 +36,7 @@ function getRepoInfo(repo, callback) {
 
 function calculateRepoStupidity(repo, callback) {
     getRepoInfo(repo, function(result) {
-        if (typeof result !=== "object") {
+        if (typeof result !== "object") {
             callback(result);
             return;
         }
