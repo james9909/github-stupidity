@@ -6,4 +6,4 @@ An application to calculate the stupidity of a GitHub repository, based off [thi
 
 Disclaimer
 ----------
-The calculations produced by this application do not reflect my views or opinions of any GitHub repository or language.
+The calculations produced by this application do not reflect my views or opinions of any GitHub repository or language, and are purely meant for fun.
