@@ -45,12 +45,13 @@ function showResultsBody(speed) {
     $("#results_body").slideDown(speed);
 }
 
-function setRepositoryResults(success, data) {
-    if (success === 1) {
+function setRepositoryResults(results) {
+    $("#results_body").empty();
+    if (results.success === 1) {
+        var data = results.data;
         $("#status").text("Success");
         $("#status").css({color: "green"});
         $("#name").text(data.name);
-        $("#results_body").empty();
         $("#results_body").append("<div><b>Stars:</b> " + data.stars + "</div>");
         $("#results_body").append("<div><b>Forks:</b> " + data.forks + "</div>");
         $("#results_body").append("<div><b>Contributors:</b> " + data.contributors + "</div>");
@@ -63,12 +64,13 @@ function setRepositoryResults(success, data) {
     showResultsBody("slow");
 }
 
-function setLanguageResults(success, data) {
-    if (success === 1) {
+function setLanguageResults(results) {
+    $("#results_body").empty();
+    if (results.success === 1) {
+        var data = results.data;
         $("#status").text("Success");
         $("#status").css({color: "green"});
         $("#name").text(data.language);
-        $("#results_body").empty();
         var repos = data["repos"];
         var sum = 0;
         for (var repo in repos) {
@@ -77,10 +79,11 @@ function setLanguageResults(success, data) {
         }
         var average = (sum / repos.length).toFixed(2);
         $("#results_body").append("<div><b>Average stupidity</b>: " + average + "%</div>");
-    }else {
+    } else {
         $("#status").text("Failed");
         $("#status").css({color: "red"});
     }
+
     showResultsHeading("slow");
     showResultsBody("slow");
 }
@@ -104,10 +107,10 @@ function calculateRepository() {
     hideResultsBody("fast");
 
     apiCall("GET", "/api/repo/calculate", data, function(result) {
-        setRepositoryResults(result.success, result.data);
+        setRepositoryResults(result);
         $(input).removeAttr("disabled");
     }, function(jqXHR) {
-        setRepositoryResults(0, {});
+        setRepositoryResults({success: 0, message: "Could not contact the api."});
         $(input).removeAttr("disabled");
     });
 }
@@ -129,10 +132,10 @@ function calculateLanguage() {
     hideResultsBody("fast");
 
     apiCall("GET", "/api/language/calculate", data, function(result) {
-        setLanguageResults(result.success, result.data);
+        setLanguageResults(result);
         $(input).removeAttr("disabled");
     }, function(jqXHR) {
-        setLanguageResults(0, {});
+        setLanguageResults({success: 0, message: "Could not contact the api."});
         $(input).removeAttr("disabled");
     });
 

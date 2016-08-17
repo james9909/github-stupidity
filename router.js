@@ -11,20 +11,34 @@ module.exports = function(app) {
     app.get("/api/repo/calculate", function(req, res) {
         var repository = req.param("repository");
         api.calculateRepoStupidity(repository, function(data) {
-            res.send({
-                success: 1,
-                data: data
-            });
+            if (typeof data !== "object") {
+                res.send({
+                    success: 0,
+                    message: data
+                });
+            } else {
+                res.send({
+                    success: 1,
+                    data: data
+                });
+            }
         });
     });
 
     app.get("/api/language/calculate", function(req, res) {
         var language = req.param("language");
         api.calculateLanguageStupidity(language, function(data) {
-            res.send({
-                success: 1,
-                data: data
-            });
+            if (typeof data !== "object") {
+                res.send({
+                    success: 0,
+                    message: data
+                });
+            } else {
+                res.send({
+                    success: 1,
+                    data: data
+                });
+            }
         });
     });
 };
