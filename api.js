@@ -129,8 +129,3 @@ function calculateLanguageStupidity(language, callback) {
 
 module.exports.calculateRepoStupidity = calculateRepoStupidity;
 module.exports.calculateLanguageStupidity = calculateLanguageStupidity;
-
-calculateLanguageStupidity("java");
-// calculateRepoStupidity("google/guava", function(name, stupidity) {
-//     console.log(name + " " + stupidity);
-// });
