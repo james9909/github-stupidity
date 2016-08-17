@@ -1,0 +1,12 @@
+# swap
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*~
+
+# logs
+logs
+*.log
+npm-debug.log*
+
+# dependencies
+node_modules

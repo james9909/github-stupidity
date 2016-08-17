@@ -1,0 +1,10 @@
+{
+  "name": "github-stupidity",
+  "version": "1.0.0",
+  "description": "Analyze the stupidity of GitHub repositories",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "James Wang",
+  "license": "MIT"
+}
