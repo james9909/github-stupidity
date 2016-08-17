@@ -11,10 +11,14 @@ if (typeof process.env.CLIENT_SECRET === "undefined") {
     return;
 }
 
-function getNextLink(header) {
-    var regex = /<(.*)>; rel="next"/;
+function getLastLink(header) {
+    var regex = /<.*(\d)>; rel="last"/;
+
     var match = regex.exec(header);
-    return match[1];
+    if (match) {
+        return match[1];
+    }
+    return 0;
 }
 
 function ghAPICall(url, callback) {
@@ -23,6 +27,7 @@ function ghAPICall(url, callback) {
     } else {
         url += "&client_id=" + process.env.CLIENT_ID + "&client_secret=" + process.env.CLIENT_SECRET;
     }
+
     request({
         url: "https://api.github.com" + url,
         json: true,
@@ -31,7 +36,7 @@ function ghAPICall(url, callback) {
         }
     }, function(err, res, body) {
         if (!err && res.statusCode === 200) {
-            callback(body);
+            callback(body, res.headers.link);
         } else if (!err && res.statusCode === 403) {
             callback("API rate limit exceeded. Please try again later.");
         } else if (!err && res.statusCode === 404) {
@@ -43,15 +48,36 @@ function ghAPICall(url, callback) {
 }
 
 function getRepoInfo(repo, callback) {
-    ghAPICall("/repos/" + repo, function repoInfoCB(result) {
+    ghAPICall("/repos/" + repo, function repoInfoCB(result, link) {
         if (typeof result !== "object") {
             callback(result);
             return;
         }
 
-        ghAPICall("/repos/" + repo + "/contributors", function contributorsCB(contributors) {
+        ghAPICall("/repos/" + repo + "/contributors", function contributorsCB(contributors, link) {
+            var contribUrls = [];
+            var last = getLastLink(link);
             result["contributors"] = contributors.length;
-            callback(result);
+
+            if (last === 0) {
+                callback(result);
+                return;
+            }
+
+            for (var i=2; i <= last; i++) {
+                contribUrls.push("/repos/" + repo + "/contributors?page=" + i);
+            }
+
+            var counter = 0;
+            for (url in contribUrls) {
+                ghAPICall(contribUrls[url], function(contributors) {
+                    result["contributors"] += contributors.length;
+                    counter++;
+                    if (counter === contribUrls.length) {
+                        callback(result);
+                    }
+                });
+            }
         });
     });
 }
