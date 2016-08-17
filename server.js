@@ -1,6 +1,5 @@
 var express = require("express");
 
-var api = require("./api");
 var router = require("./router");
 
 var app = express();
