@@ -9,68 +9,70 @@
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     </head>
 
-    <div class="jumbotron page-title">
-        <div class="text-center">
-            <div class="row">
-                <h2>GitHub Stupidity</h2>
-                Check the stupidity of a GitHub repository or language. Inspired by <a href="http://ericgreer.info/github/funny/stupidity/2016/02/28/judging-the-stupidity-of-github-projects.html">this article</a>.
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-md-offset-5 col-md-2">
-                    <div class="form-group">
-                        <select onChange="javascript:changeForm(this)" class="form-control" id="searchOption">
-                            <option>Repository</option>
-                            <option>Language</option>
-                        </select>
+    <body>
+        <div class="jumbotron page-title">
+            <div class="text-center">
+                <div class="row">
+                    <h2>GitHub Stupidity</h2>
+                    Check the stupidity of a GitHub repository or language. Inspired by <a href="http://ericgreer.info/github/funny/stupidity/2016/02/28/judging-the-stupidity-of-github-projects.html">this article</a>.
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-offset-5 col-md-2">
+                        <div class="form-group">
+                            <select onChange="javascript:changeForm(this)" class="form-control" id="searchOption">
+                                <option>Repository</option>
+                                <option>Language</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div id="repositoryForm" class="col-md-6 col-md-offset-3">
-            <h2>Repository</h2>
-            <form action="javascript:calculateRepository();">
-                <div class="input-group">
-                    <input type="text" id="repositoryInput" class="form-control" placeholder="james9909/github-stupidity" autocomplete="off">
-                    <span class="input-group-btn">
-                        <input id="submitRepository" type="submit" class="btn btn-primary" value="Calculate">
-                    </span>
-                </div>
-            </form>
-        </div>
-        <div style="display: none" id="languageForm" class="col-md-6 col-md-offset-3">
-            <h2>Language</h2>
-            <form action="javascript:calculateLanguage();">
-                <div class="input-group">
-                    <input type="text" id="languageInput" class="typeahead form-control" placeholder="javascript" autocomplete="off" data-provide="typeahead">
-                    <span class="input-group-btn">
-                        <input id="submitLanguage" type="submit" class="btn btn-primary" value="Calculate">
-                    </span>
-                </div>
-            </form>
-        </div>
-    </div>
-    <br>
-    <div id="results" class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <div class="panel panel-default">
-                <div id="results_heading" class="panel-heading">
-                    <div class="panel-title">
-                        <span id="name"></span>
-                        <span id="status" class="pull-right"></span>
+        <div class="row">
+            <div id="repositoryForm" class="col-md-6 col-md-offset-3">
+                <h2>Repository</h2>
+                <form action="javascript:calculateRepository();">
+                    <div class="input-group">
+                        <input type="text" id="repositoryInput" class="form-control" placeholder="james9909/github-stupidity" autocomplete="off">
+                        <span class="input-group-btn">
+                            <input id="submitRepository" type="submit" class="btn btn-primary" value="Calculate">
+                        </span>
                     </div>
-                </div>
-                <div id="results_body" class="panel-body">
+                </form>
+            </div>
+            <div style="display: none" id="languageForm" class="col-md-6 col-md-offset-3">
+                <h2>Language</h2>
+                <form action="javascript:calculateLanguage();">
+                    <div class="input-group">
+                        <input type="text" id="languageInput" class="typeahead form-control" placeholder="javascript" autocomplete="off" data-provide="typeahead">
+                        <span class="input-group-btn">
+                            <input id="submitLanguage" type="submit" class="btn btn-primary" value="Calculate">
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br>
+        <div id="results" class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default">
+                    <div id="results_heading" class="panel-heading">
+                        <div class="panel-title">
+                            <span id="name"></span>
+                            <span id="status" class="pull-right"></span>
+                        </div>
+                    </div>
+                    <div id="results_body" class="panel-body">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="/js/bootstrap3-typeahead.min.js"></script>
-    <script src="/js/main.js"></script>
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="/js/bootstrap3-typeahead.min.js"></script>
+        <script src="/js/main.js"></script>
+    </body>
 </html>
