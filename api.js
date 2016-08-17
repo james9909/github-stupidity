@@ -12,7 +12,7 @@ if (typeof process.env.CLIENT_SECRET === "undefined") {
 }
 
 function getLastLink(header) {
-    var regex = /<.*(\d)>; rel="last"/;
+    var regex = /page=(\d+)>; rel="last"/;
 
     var match = regex.exec(header);
     if (match) {
