@@ -89,6 +89,7 @@ function calculateRepoStupidity(repo, callback) {
             return;
         }
 
+        var name = result["full_name"]
         var stars = result["stargazers_count"];
         var forks = result["forks_count"];
         var contributors = result["contributors"];
@@ -98,8 +99,38 @@ function calculateRepoStupidity(repo, callback) {
         if (stupidity < 0) {
             stupidity = 0;
         }
-        callback(stupidity);
+        callback(name, stupidity);
+    });
+}
+
+function calculateLanguageStupidity(language, callback) {
+    var wait = 20;
+    var callback_data = [];
+    ghAPICall("/search/repositories?q=+language:" + language + "&sort=stars&order=desc&per_page=20", function(result) {
+        if (typeof result !== "object") {
+            callback(result);
+            return;
+        }
+
+        var repos = result["items"];
+        for (repo in repos) {
+            calculateRepoStupidity(repos[repo]["full_name"], function(name, stupidity) {
+                callback_data.push({
+                    name: name,
+                    stupidity: stupidity
+                });
+                if (--wait === 0) {
+                    callback(callback_data);
+                }
+            });
+        }
     });
 }
 
 module.exports.calculateRepoStupidity = calculateRepoStupidity;
+module.exports.calculateLanguageStupidity = calculateLanguageStupidity;
+
+calculateLanguageStupidity("java");
+// calculateRepoStupidity("google/guava", function(name, stupidity) {
+//     console.log(name + " " + stupidity);
+// });
