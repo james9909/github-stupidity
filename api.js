@@ -99,7 +99,14 @@ function calculateRepoStupidity(repo, callback) {
         if (stupidity < 0) {
             stupidity = 0;
         }
-        callback(name, stupidity);
+        var data = {
+            name: name,
+            stars: stars,
+            forks: forks,
+            contributors: contributors,
+            stupidity: stupidity
+        }
+        callback(data);
     });
 }
 
@@ -114,11 +121,8 @@ function calculateLanguageStupidity(language, callback) {
 
         var repos = result["items"];
         for (repo in repos) {
-            calculateRepoStupidity(repos[repo]["full_name"], function(name, stupidity) {
-                callback_data.push({
-                    name: name,
-                    stupidity: stupidity
-                });
+            calculateRepoStupidity(repos[repo]["full_name"], function(data) {
+                callback_data.push(data);
                 if (--wait === 0) {
                     callback(callback_data);
                 }
