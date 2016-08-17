@@ -57,7 +57,7 @@ function setRepositoryResults(results) {
         $("#results_body").append("<div><b>Contributors:</b> " + data.contributors + "</div>");
         $("#results_body").append("<div><b>Stupidity:</b> " + data.stupidity + "%</div>");
     } else {
-        $("#status").text("Failed");
+        $("#status").text(results.message);
         $("#status").css({color: "red"});
     }
     showResultsHeading("slow");
@@ -80,7 +80,7 @@ function setLanguageResults(results) {
         var average = (sum / repos.length).toFixed(2);
         $("#results_body").append("<div><b>Average stupidity</b>: " + average + "%</div>");
     } else {
-        $("#status").text("Failed");
+        $("#status").text(results.message);
         $("#status").css({color: "red"});
     }
 
