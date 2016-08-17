@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Analyze the stupidity of GitHub repositories",
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
   },
   "author": "James Wang",
   "license": "MIT",
