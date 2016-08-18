@@ -9,7 +9,7 @@ module.exports = function(app) {
 
     // API endpoints
     app.get("/api/repo/calculate", function(req, res) {
-        var repository = req.param("repository");
+        var repository = req.query.repository;
         api.calculateRepoStupidity(repository, function(data) {
             if (typeof data !== "object") {
                 res.send({
@@ -26,7 +26,7 @@ module.exports = function(app) {
     });
 
     app.get("/api/language/calculate", function(req, res) {
-        var language = req.param("language");
+        var language = req.query.language;
         api.calculateLanguageStupidity(language, function(data) {
             if (typeof data !== "object") {
                 res.send({
