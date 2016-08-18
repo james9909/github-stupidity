@@ -123,6 +123,11 @@ function calculateLanguageStupidity(language, callback) {
         }
 
         var repos = result["items"];
+        if (repos.length === 0) {
+            callback("No repositories found.");
+            return;
+        }
+
         var wait = repos.length;
         for (repo in repos) {
             calculateRepoStupidity(repos[repo]["full_name"], function(data) {
