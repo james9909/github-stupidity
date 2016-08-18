@@ -51,7 +51,7 @@ function setRepositoryResults(results) {
         var data = results.data;
         $("#status").text("Success");
         $("#status").css({color: "green"});
-        $("#name").text(data.name);
+        $("#name").html("<a href='https://github.com/" + data.name + "'>" + data.name + "</a>");
         $("#results_body").append("<div><b>Stars:</b> " + data.stars + "</div>");
         $("#results_body").append("<div><b>Forks:</b> " + data.forks + "</div>");
         $("#results_body").append("<div><b>Contributors:</b> " + data.contributors + "</div>");
@@ -74,7 +74,8 @@ function setLanguageResults(results) {
         var repos = data["repos"];
         var sum = 0;
         for (var repo in repos) {
-            $("#results_body").append("<div><b>" + repos[repo].name + "</b>: " + repos[repo].stupidity + "%</div>");
+            var name = repos[repo].name;
+            $("#results_body").append("<div><a href='https://github.com/" + name + "'>" + name + "</a>: " + repos[repo].stupidity + "%</div>");
             sum += parseFloat(repos[repo].stupidity);
         }
         var average = (sum / repos.length).toFixed(2);
