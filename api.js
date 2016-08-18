@@ -122,6 +122,11 @@ function calculateLanguageStupidity(language, callback) {
             return;
         }
 
+        if (result === null) {
+            callback("Language not found.");
+            return;
+        }
+
         var repos = result["items"];
         if (repos.length === 0) {
             callback("No repositories found.");
