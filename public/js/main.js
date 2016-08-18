@@ -123,6 +123,8 @@ function calculateLanguage() {
         return;
     }
 
+    $("#name").text(language);
+
     var data = {};
     data["language"] = language;
 
