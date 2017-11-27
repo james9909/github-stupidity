@@ -36,11 +36,11 @@ function ghAPICall(url, callback) {
         }
     }, function(err, res, body) {
         if (!err && res.statusCode === 200) {
-            callback(body, res.headers.link);
+            callback(null, body, res.headers.link);
         } else if (!err && res.statusCode === 403) {
-            callback("API rate limit exceeded. Please try again later.");
+            callback(new Error("API rate limit exceeded. Please try again later."));
         } else if (!err && res.statusCode === 404) {
-            callback("Repository not found.");
+            callback(new Error("Repository not found."));
         } else {
             callback(err);
         }
@@ -48,19 +48,23 @@ function ghAPICall(url, callback) {
 }
 
 function getRepoInfo(repo, callback) {
-    ghAPICall("/repos/" + repo, function repoInfoCB(result, link) {
-        if (typeof result !== "object") {
-            callback(result);
+    ghAPICall("/repos/" + repo, function repoInfoCB(err, result, link) {
+        if (err) {
+            callback(err);
             return;
         }
 
-        ghAPICall("/repos/" + repo + "/contributors", function contributorsCB(contributors, link) {
+        ghAPICall("/repos/" + repo + "/contributors", function contributorsCB(err, contributors, link) {
+            if (err) {
+                callback(err);
+                return;
+            }
             var contribUrls = [];
             var last = getLastLink(link);
             result["contributors"] = contributors.length;
 
             if (last === 0) {
-                callback(result);
+                callback(null, result);
                 return;
             }
 
@@ -70,11 +74,15 @@ function getRepoInfo(repo, callback) {
 
             var counter = 0;
             for (url in contribUrls) {
-                ghAPICall(contribUrls[url], function(contributors) {
+                ghAPICall(contribUrls[url], function(err, contributors) {
+                    if (err) {
+                        callback(err);
+                        return;
+                    }
                     result["contributors"] += contributors.length;
                     counter++;
                     if (counter === contribUrls.length) {
-                        callback(result);
+                        callback(null, result);
                     }
                 });
             }
@@ -83,9 +91,9 @@ function getRepoInfo(repo, callback) {
 }
 
 function calculateRepoStupidity(repo, callback) {
-    getRepoInfo(repo, function(result) {
-        if (typeof result !== "object") {
-            callback(result);
+    getRepoInfo(repo, function(err, result) {
+        if (err) {
+            callback(err);
             return;
         }
 
@@ -111,7 +119,7 @@ function calculateRepoStupidity(repo, callback) {
             contributors: contributors,
             stupidity: stupidity
         }
-        callback(data);
+        callback(null, data);
     });
 }
 
@@ -121,29 +129,33 @@ function calculateLanguageStupidity(language, callback) {
         repos: []
     };
 
-    ghAPICall("/search/repositories?q=+language:" + language + "&sort=stars&order=desc&per_page=20", function(result) {
-        if (typeof result !== "object") {
-            callback(result);
+    ghAPICall("/search/repositories?q=+language:" + language + "&sort=stars&order=desc&per_page=20", function(err, result) {
+        if (err) {
+            callback(err);
             return;
         }
 
         if (result === null) {
-            callback("Language not found.");
+            callback(new Error("Language not found."));
             return;
         }
 
         var repos = result["items"];
         if (repos.length === 0) {
-            callback("No repositories found.");
+            callback(new Error("No repositories found."));
             return;
         }
 
         var wait = repos.length;
         for (repo in repos) {
-            calculateRepoStupidity(repos[repo]["full_name"], function(data) {
+            calculateRepoStupidity(repos[repo]["full_name"], function(err, data) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
                 callback_data["repos"].push(data);
                 if (--wait === 0) {
-                    callback(callback_data);
+                    callback(null, callback_data);
                 }
             });
         }

@@ -10,11 +10,11 @@ module.exports = function(app) {
     // API endpoints
     app.get("/api/repo/calculate", function(req, res) {
         var repository = req.query.repository;
-        api.calculateRepoStupidity(repository, function(data) {
-            if (typeof data !== "object") {
+        api.calculateRepoStupidity(repository, function(err, data) {
+            if (err) {
                 res.send({
                     success: 0,
-                    message: data
+                    message: err.message
                 });
             } else {
                 res.send({
@@ -27,11 +27,11 @@ module.exports = function(app) {
 
     app.get("/api/language/calculate", function(req, res) {
         var language = req.query.language;
-        api.calculateLanguageStupidity(language, function(data) {
-            if (typeof data !== "object") {
+        api.calculateLanguageStupidity(language, function(err, data) {
+            if (err) {
                 res.send({
                     success: 0,
-                    message: data
+                    message: err.message
                 });
             } else {
                 res.send({
