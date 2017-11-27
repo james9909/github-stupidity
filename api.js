@@ -35,16 +35,18 @@ function ghAPICall(url, callback) {
             "User-Agent": "github-stupidity"
         }
     }, function(err, res, body) {
-        if (!err && res.statusCode === 200) {
+        if (err) {
+            callback(err);
+        } else if (res.statusCode === 200) {
             callback(null, body, res.headers.link);
-        } else if (!err && res.statusCode == 401) {
+        } else if (res.statusCode == 401) {
             callback(new Error("Bad credentials."));
-        } else if (!err && res.statusCode === 403) {
+        } else if (res.statusCode === 403) {
             callback(new Error("API rate limit exceeded. Please try again later."));
-        } else if (!err && res.statusCode === 404) {
+        } else if (res.statusCode === 404) {
             callback(new Error("Repository not found."));
         } else {
-            callback(err);
+            callback(new Error("Failed to make api request."));
         }
     });
 }
