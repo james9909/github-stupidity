@@ -37,6 +37,8 @@ function ghAPICall(url, callback) {
     }, function(err, res, body) {
         if (!err && res.statusCode === 200) {
             callback(null, body, res.headers.link);
+        } else if (!err && res.statusCode == 401) {
+            callback(new Error("Bad credentials."));
         } else if (!err && res.statusCode === 403) {
             callback(new Error("API rate limit exceeded. Please try again later."));
         } else if (!err && res.statusCode === 404) {
