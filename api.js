@@ -130,10 +130,6 @@ function calculateRepoStupidity(repo) {
 }
 
 function calculateLanguageStupidity(language) {
-    var callback_data = {
-        language: language,
-        repos: []
-    };
     return new Promise(function(resolve, reject) {
         ghAPICall("/search/repositories?q=+language:" + language + "&sort=stars&order=desc&per_page=20").then(function(data) {
             if (data === null) {
@@ -151,7 +147,11 @@ function calculateLanguageStupidity(language) {
             }
 
             Promise.all(urls.map(calculateRepoStupidity)).then(function(data) {
-                return resolve(data);
+                var res = {
+                    language: language,
+                    repos: data
+                };
+                return resolve(res);
             }, function(err) {
                 return reject(err);
             });

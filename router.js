@@ -10,35 +10,31 @@ module.exports = function(app) {
     // API endpoints
     app.get("/api/repo/calculate", function(req, res) {
         var repository = req.query.repository;
-        api.calculateRepoStupidity(repository, function(err, data) {
-            if (err) {
-                res.send({
-                    success: 0,
-                    message: err.message
-                });
-            } else {
-                res.send({
-                    success: 1,
-                    data: data
-                });
-            }
+        api.calculateRepoStupidity(repository).then(function(data) {
+            res.send({
+                success: 1,
+                data: data
+            })
+        }, function(err) {
+            res.send({
+                success: 0,
+                message: err.message
+            });
         });
     });
 
     app.get("/api/language/calculate", function(req, res) {
         var language = req.query.language;
-        api.calculateLanguageStupidity(language, function(err, data) {
-            if (err) {
-                res.send({
-                    success: 0,
-                    message: err.message
-                });
-            } else {
-                res.send({
-                    success: 1,
-                    data: data
-                });
-            }
+        api.calculateLanguageStupidity(language).then(function(data) {
+            res.send({
+                success: 1,
+                data: data
+            });
+        }, function(err) {
+            res.send({
+                success: 0,
+                message: err.message
+            });
         });
     });
 };
