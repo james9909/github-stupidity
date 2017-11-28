@@ -158,8 +158,10 @@ function calculateLanguageStupidity(language, callback) {
                     return;
                 }
                 callback_data["repos"].push(data);
-                if (--wait === 0) {
+                wait--;
+                if (wait === 0) {
                     callback(null, callback_data);
+                    return;
                 }
             });
         }
