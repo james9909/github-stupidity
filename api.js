@@ -1,4 +1,5 @@
 var request = require("request");
+var rp = require("request-promise");
 require("dotenv").config({silent: true});
 
 if (typeof process.env.CLIENT_ID === "undefined") {
@@ -28,143 +29,135 @@ function ghAPICall(url, callback) {
         url += "&client_id=" + process.env.CLIENT_ID + "&client_secret=" + process.env.CLIENT_SECRET;
     }
 
-    request({
-        url: "https://api.github.com" + url,
-        json: true,
-        headers: {
-            "User-Agent": "github-stupidity"
-        }
-    }, function(err, res, body) {
-        if (err) {
-            callback(err);
-        } else if (res.statusCode === 200) {
-            callback(null, body, res.headers.link);
-        } else if (res.statusCode == 401) {
-            callback(new Error("Bad credentials."));
-        } else if (res.statusCode === 403) {
-            callback(new Error("API rate limit exceeded. Please try again later."));
-        } else if (res.statusCode === 404) {
-            callback(new Error("Repository not found."));
-        } else {
-            callback(new Error("Failed to make api request."));
-        }
-    });
-}
-
-function getRepoInfo(repo, callback) {
-    ghAPICall("/repos/" + repo, function repoInfoCB(err, result, link) {
-        if (err) {
-            callback(err);
-            return;
-        }
-
-        ghAPICall("/repos/" + repo + "/contributors", function contributorsCB(err, contributors, link) {
-            if (err) {
-                callback(err);
-                return;
-            }
-            var contribUrls = [];
-            var last = getLastLink(link);
-            result["contributors"] = contributors.length;
-
-            if (last === 0) {
-                callback(null, result);
-                return;
-            }
-
-            for (var i=2; i <= last; i++) {
-                contribUrls.push("/repos/" + repo + "/contributors?page=" + i);
-            }
-
-            var counter = 0;
-            for (url in contribUrls) {
-                ghAPICall(contribUrls[url], function(err, contributors) {
-                    if (err) {
-                        callback(err);
-                        return;
-                    }
-                    result["contributors"] += contributors.length;
-                    counter++;
-                    if (counter === contribUrls.length) {
-                        callback(null, result);
-                    }
-                });
+    return new Promise(function(resolve, reject) {
+        rp({
+            url: "https://api.github.com" + url,
+            json: true,
+            headers: {
+                "User-Agent": "github-stupidity"
+            },
+            resolveWithFullResponse: true
+        }).then(function(res) {
+            return resolve({body: res.body, link: res.headers.link});
+        }).catch(function(err) {
+            if (err.statusCode == 401) {
+                return reject(new Error("Bad credentials."));
+            } else if (err.statusCode === 403) {
+                return reject(new Error("API rate limit exceeded. Please try again later."));
+            } else if (err.statusCode === 404) {
+                return reject(new Error("Repository not found."));
+            } else {
+                return reject(new Error("Failed to make api request."));
             }
         });
     });
 }
 
-function calculateRepoStupidity(repo, callback) {
-    getRepoInfo(repo, function(err, result) {
-        if (err) {
-            callback(err);
-            return;
-        }
+function getContributors(repo) {
+    return new Promise(function(resolve, reject) {
+        ghAPICall("/repos/" + repo + "/contributors").then(function(res) {
+            var data = res.body;
+            var urls = [];
+            var last = getLastLink(res.link);
+            var contributors = data.length;
 
-        var name = result["full_name"]
-        var stars = result["stargazers_count"];
-        var forks = result["forks_count"];
-        var contributors = result["contributors"];
-        var stupidity;
-        if (stars === 0) {
-            stupidity = 0;
-        } else {
-            stupidity = (((forks - contributors) / stars) * 100);
-        }
-        stupidity = stupidity.toFixed(2);
+            if (last == 0) {
+                return resolve(contributors);
+            }
 
-        if (stupidity < 0) {
-            stupidity = 0;
-        }
-        var data = {
-            name: name,
-            stars: stars,
-            forks: forks,
-            contributors: contributors,
-            stupidity: stupidity
-        }
-        callback(null, data);
+            for (var i=2; i <= last; i++) {
+                urls.push("/repos/" + repo + "/contributors?page=" + i);
+            }
+
+            Promise.all(urls.map(ghAPICall)).then(function(res) {
+                contributors += res.length;
+                return resolve(contributors);
+            });
+        }, function(err) {
+            return reject(err);
+        });
     });
 }
 
-function calculateLanguageStupidity(language, callback) {
+function getRepoInfo(repo) {
+    return new Promise(function(resolve, reject) {
+        ghAPICall("/repos/" + repo).then(function(result) {
+            getContributors(repo).then(function(contributors) {
+                var ret = result.body;
+                ret["contributors"] = contributors;
+                return resolve(ret);
+            }, function(err) {
+                return reject(err);
+            });
+        }, function(err) {
+            return reject(err);
+        });
+    });
+}
+
+function calculateRepoStupidity(repo) {
+    return new Promise(function(resolve, reject) {
+        getRepoInfo(repo).then(function(data) {
+            var name = data["full_name"]
+            var stars = data["stargazers_count"];
+            var forks = data["forks_count"];
+            var contributors = data["contributors"];
+            var stupidity;
+
+            if (stars === 0) {
+                stupidity = 0;
+            } else {
+                stupidity = (((forks - contributors) / stars) * 100);
+            }
+            stupidity = stupidity.toFixed(2);
+
+            if (stupidity < 0) {
+                stupidity = 0;
+            }
+
+            var data = {
+                name: name,
+                stars: stars,
+                forks: forks,
+                contributors: contributors,
+                stupidity: stupidity
+            };
+            return resolve(data);
+        }, function(err) {
+            return reject(err);
+        });
+    });
+}
+
+function calculateLanguageStupidity(language) {
     var callback_data = {
         language: language,
         repos: []
     };
+    return new Promise(function(resolve, reject) {
+        ghAPICall("/search/repositories?q=+language:" + language + "&sort=stars&order=desc&per_page=20").then(function(data) {
+            if (data === null) {
+                return reject(new Error("Language not found."));
+            }
 
-    ghAPICall("/search/repositories?q=+language:" + language + "&sort=stars&order=desc&per_page=20", function(err, result) {
-        if (err) {
-            callback(err);
-            return;
-        }
+            var urls = [];
+            var repos = data.body["items"];
+            if (repos.length === 0) {
+                return reject(new Error("No repositories found."));
+            }
 
-        if (result === null) {
-            callback(new Error("Language not found."));
-            return;
-        }
+            for (repo in repos) {
+                urls.push(repos[repo]["full_name"]);
+            }
 
-        var repos = result["items"];
-        if (repos.length === 0) {
-            callback(new Error("No repositories found."));
-            return;
-        }
-
-        var wait = repos.length;
-        for (repo in repos) {
-            calculateRepoStupidity(repos[repo]["full_name"], function(err, data) {
-                if (err) {
-                    callback(err);
-                    return;
-                }
-                callback_data["repos"].push(data);
-                wait--;
-                if (wait === 0) {
-                    callback(null, callback_data);
-                    return;
-                }
+            Promise.all(urls.map(calculateRepoStupidity)).then(function(data) {
+                return resolve(data);
+            }, function(err) {
+                return reject(err);
             });
-        }
+        }, function(err) {
+            return reject(err);
+        });
     });
 }
 
