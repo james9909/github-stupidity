@@ -46,7 +46,10 @@ function ghAPICall(url, callback) {
                 return reject(new Error("API rate limit exceeded. Please try again later."));
             } else if (err.statusCode === 404) {
                 return reject(new Error("Repository not found."));
+            } else if (err.statusCode === 422) {
+                return reject(new Error("Invalid field."));
             } else {
+                console.log(err.statusCode)
                 return reject(new Error("Failed to make api request."));
             }
         });

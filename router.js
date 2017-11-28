@@ -31,10 +31,18 @@ module.exports = function(app) {
                 data: data
             });
         }, function(err) {
-            res.send({
-                success: 0,
-                message: err.message
-            });
+            if (err.message === "Invalid field.") {
+                // Invalid language
+                res.send({
+                    success: 0,
+                    message: "Invalid language."
+                });
+            } else {
+                res.send({
+                    success: 0,
+                    message: err.message
+                });
+            }
         });
     });
 };
