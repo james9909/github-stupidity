@@ -63,13 +63,11 @@ describe("api", function() {
         it("should work on valid languages", function(done) {
             this.timeout(8000);
             api.calculateLanguageStupidity("javascript", function(err, data) {
-                if (err && err.message === RATE_LIMITED) {
-                    done();
-                } else {
+                if (!err || err.message !== RATE_LIMITED) {
                     assert(err === null);
                     assert(typeof data === "object");
-                    done();
                 }
+                done();
             });
         });
     });
