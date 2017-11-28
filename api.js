@@ -168,3 +168,4 @@ function calculateLanguageStupidity(language, callback) {
 
 module.exports.calculateRepoStupidity = calculateRepoStupidity;
 module.exports.calculateLanguageStupidity = calculateLanguageStupidity;
+module.exports.getRepoInfo = getRepoInfo;
