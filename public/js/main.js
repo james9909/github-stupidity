@@ -129,17 +129,17 @@ function calculateLanguage() {
     data["language"] = language;
 
     var input = $("#submitLanguage");
-    $(input).attr("disabled", "disabled");
+    $(input).button("loading");
 
     hideResultsHeading("fast");
     hideResultsBody("fast");
 
     apiCall("GET", "/api/language/calculate", data, function(result) {
         setLanguageResults(result);
-        $(input).removeAttr("disabled");
+        $(input).button("reset");
     }, function(jqXHR) {
         setLanguageResults({success: 0, message: "Could not contact the api."});
-        $(input).removeAttr("disabled");
+        $(input).button("reset");
     });
 
 }

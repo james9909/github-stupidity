@@ -7,6 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>GitHub Stupidity</title>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
 
     <body>
@@ -38,7 +39,7 @@
                     <div class="input-group">
                         <input type="text" id="repositoryInput" pattern=".+/.+" class="form-control" placeholder="james9909/github-stupidity" autocomplete="off">
                         <span class="input-group-btn">
-                            <input id="submitRepository" type="submit" class="btn btn-primary" value="Calculate">
+                            <button id="submitRepository" type="submit" class="btn btn-primary" data-loading-text="<i class='fa fa-spinner fa-spin'></i> Calculating...">Calculate</button>
                         </span>
                     </div>
                 </form>
@@ -49,7 +50,7 @@
                     <div class="input-group">
                         <input type="text" id="languageInput" class="typeahead form-control" placeholder="javascript" autocomplete="off" data-provide="typeahead">
                         <span class="input-group-btn">
-                            <input id="submitLanguage" type="submit" class="btn btn-primary" value="Calculate">
+                            <button id="submitLanguage" type="submit" class="btn btn-primary" data-loading-text="<i class='fa fa-spinner fa-spin'></i> Calculating...">Calculate</button>
                         </span>
                     </div>
                 </form>
