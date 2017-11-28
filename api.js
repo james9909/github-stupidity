@@ -49,7 +49,6 @@ function ghAPICall(url, callback) {
             } else if (err.statusCode === 422) {
                 return reject(new Error("Invalid field."));
             } else {
-                console.log(err.statusCode)
                 return reject(new Error("Failed to make api request."));
             }
         });
@@ -135,9 +134,6 @@ function calculateRepoStupidity(repo) {
 function calculateLanguageStupidity(language) {
     return new Promise(function(resolve, reject) {
         ghAPICall("/search/repositories?q=+language:" + language + "&sort=stars&order=desc&per_page=20").then(function(data) {
-            if (data === null) {
-                return reject(new Error("Language not found."));
-            }
 
             var urls = [];
             var repos = data.body["items"];
