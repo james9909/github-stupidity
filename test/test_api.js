@@ -57,7 +57,8 @@ describe("api", function() {
         it("should work on valid languages", function() {
             this.timeout(8000);
             return api.calculateLanguageStupidity("javascript").then(function(data) {
-                expect(data.length).to.equal(20);
+                expect(data.language).to.equal("javascript");
+                expect(data.repos.length).to.equal(20);
             })
         })
     })
