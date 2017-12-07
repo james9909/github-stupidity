@@ -12,6 +12,10 @@ if (typeof process.env.CLIENT_SECRET === "undefined") {
     return;
 }
 
+/*
+ * Get the last page number of a paginated request.
+ * Used to determine how many pages of contributors to request.
+ */
 function getLastLink(header) {
     var regex = /page=(\d+)>; rel="last"/;
 
@@ -22,7 +26,10 @@ function getLastLink(header) {
     return 0;
 }
 
-function ghAPICall(url, callback) {
+/*
+ * Make an api call to the GitHub api.
+ */
+function ghAPICall(url) {
     if (url.indexOf("?") === -1) {
         url += "?client_id=" + process.env.CLIENT_ID + "&client_secret=" + process.env.CLIENT_SECRET;
     } else {
@@ -55,6 +62,9 @@ function ghAPICall(url, callback) {
     });
 }
 
+/*
+ * Get the number of users who contributed to a repository.
+ */
 function getContributors(repo) {
     return new Promise(function(resolve, reject) {
         ghAPICall("/repos/" + repo + "/contributors").then(function(res) {
@@ -81,6 +91,10 @@ function getContributors(repo) {
     });
 }
 
+/*
+ * Get basic information about a repository, including stars, forks,
+ * and number of contributors.
+ */
 function getRepoInfo(repo) {
     return new Promise(function(resolve, reject) {
         ghAPICall("/repos/" + repo).then(function(result) {
@@ -97,6 +111,9 @@ function getRepoInfo(repo) {
     });
 }
 
+/*
+ * Calculate the stupidity of a repository.
+ */
 function calculateRepoStupidity(repo) {
     return new Promise(function(resolve, reject) {
         getRepoInfo(repo).then(function(data) {
@@ -131,6 +148,9 @@ function calculateRepoStupidity(repo) {
     });
 }
 
+/*
+ * Calculate the stupidity of a language
+ */
 function calculateLanguageStupidity(language) {
     return new Promise(function(resolve, reject) {
         ghAPICall("/search/repositories?q=+language:" + language + "&sort=stars&order=desc&per_page=20").then(function(data) {
@@ -141,10 +161,12 @@ function calculateLanguageStupidity(language) {
                 return reject(new Error("No repositories found."));
             }
 
+            // Get repo urls
             for (repo in repos) {
                 urls.push(repos[repo]["full_name"]);
             }
 
+            // Calculate the stupidity of all repositories
             Promise.all(urls.map(calculateRepoStupidity)).then(function(data) {
                 var res = {
                     language: language,
