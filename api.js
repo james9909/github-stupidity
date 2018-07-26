@@ -81,7 +81,16 @@ function getContributors(repo) {
                 urls.push("/repos/" + repo + "/contributors?page=" + i);
             }
 
-            Promise.all(urls.map(ghAPICall)).then(function(res) {
+            var promises = [];
+            for (var i = 0; i < urls.length; i++) {
+                setTimeout(function () {
+                    if (urls[i] !== undefined) {
+                        promises.push(ghAPICall(urls[i]));
+                    }
+                }, 500);
+            }
+
+            Promise.all(promises).then(function(res) {
                 contributors += res.length;
                 return resolve(contributors);
             });
