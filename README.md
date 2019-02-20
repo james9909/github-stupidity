@@ -4,7 +4,7 @@
 
 Description
 -----------
-An application to calculate the stupidity of a GitHub repository, based off [this article](http://ericgreer.info/github/funny/stupidity/2016/02/28/judging-the-stupidity-of-github-projects.html). Additionally, you can view the stupidity of a language, calculated from the average stupidity of the top 20 repositories in that language.
+An application to calculate the stupidity of a GitHub repository, based off [this article](https://ericgreer.info/post/judging-the-stupidity-of-github-projects/). Additionally, you can view the stupidity of a language, calculated from the average stupidity of the top 20 repositories in that language.
 
 Disclaimer
 ----------
