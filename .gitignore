@@ -12,4 +12,7 @@ npm-debug.log*
 node_modules
 
 .env
-.next
+.next/
+
+# Compiled typescript
+build/
