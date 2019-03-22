@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Analyze the stupidity of GitHub repositories",
   "scripts": {
-    "start": "node server.js",
+    "dev": "node src/server.js",
     "test": "mocha"
   },
   "author": "James Wang",
@@ -11,6 +11,9 @@
   "dependencies": {
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
+    "next": "^8.0.3",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4",
     "request": "^2.88.0",
     "request-promise": "^4.2.4"
   },
