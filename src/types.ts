@@ -32,4 +32,6 @@ export interface LanguageResult {
 
 export declare const getRepoInfo: (repo: string) => Promise<GithubRepository>;
 export declare const calculateRepoStupidity: (repo: string) => Promise<object>;
-export declare const calculateLanguageStupidity: (language: string) => Promise<object>;
+export declare const calculateLanguageStupidity: (
+  language: string
+) => Promise<object>;

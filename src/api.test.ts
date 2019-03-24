@@ -26,7 +26,9 @@ describe("api", () => {
 
   describe("#calculateRepoStupidity", () => {
     it("should fail for invalid repos", () => {
-      expect(calculateRepoStupidity("james9909/githuub-stupidity")).rejects.toThrow();
+      expect(
+        calculateRepoStupidity("james9909/githuub-stupidity")
+      ).rejects.toThrow();
     });
 
     it("should work on valid repos", () => {
@@ -50,12 +52,10 @@ describe("api", () => {
     });
 
     it("should work on valid languages", () => {
-      calculateLanguageStupidity("javascript").then(
-        (data: LanguageResult) => {
-          expect(data.language).toEqual("javascript");
-          expect(data.repos.length).toEqual(20);
-        }
-      );
+      calculateLanguageStupidity("javascript").then((data: LanguageResult) => {
+        expect(data.language).toEqual("javascript");
+        expect(data.repos.length).toEqual(20);
+      });
     });
   });
 });

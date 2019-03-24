@@ -1,7 +1,11 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
-import { GithubResponse, GithubRepository, GithubSearch, RepoResult, LanguageResult } from "./types";
-
-require("dotenv").config({ silent: true });
+import {
+  GithubResponse,
+  GithubRepository,
+  GithubSearch,
+  RepoResult,
+  LanguageResult
+} from "./types";
 
 axios.defaults.headers = {
   "User-Agent": "github-stupidity"
@@ -166,7 +170,9 @@ const calculateRepoStupidity = (repo: string): Promise<RepoResult> => {
 /*
  * Calculate the stupidity of a language
  */
-const calculateLanguageStupidity = (language: string): Promise<LanguageResult> => {
+const calculateLanguageStupidity = (
+  language: string
+): Promise<LanguageResult> => {
   return new Promise((resolve, reject) => {
     ghAPICall(
       `/search/repositories?q=+language:${language}&sort=stars&order=desc&per_page=20`
