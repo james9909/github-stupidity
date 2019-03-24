@@ -1,27 +1,11 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
+import { GithubResponse, GithubRepository, GithubSearch, RepoResult, LanguageResult } from "./types";
+
 require("dotenv").config({ silent: true });
 
 axios.defaults.headers = {
   "User-Agent": "github-stupidity"
 };
-
-interface GithubRepository {
-  stargazers_count: number;
-  full_name: string;
-  forks_count: number;
-  contributors: number;
-}
-
-interface GithubSearch {
-  total_count: number;
-  items: object[] | GithubRepository[];
-  incomplete_results: boolean;
-}
-
-interface GithubResponse {
-  data: object | object[] | GithubRepository | GithubSearch;
-  link: string;
-}
 
 /*
  * Get the last page number of a paginated request.
@@ -126,6 +110,7 @@ const getRepoInfo = (repo: string): Promise<GithubRepository> => {
           .then((contributors: number) => {
             const data = result.data as GithubRepository;
             return resolve({
+              name: data.name,
               stargazers_count: data.stargazers_count,
               full_name: data.full_name,
               forks_count: data.forks_count,
@@ -145,7 +130,7 @@ const getRepoInfo = (repo: string): Promise<GithubRepository> => {
 /*
  * Calculate the stupidity of a repository.
  */
-const calculateRepoStupidity = (repo: string): Promise<object> => {
+const calculateRepoStupidity = (repo: string): Promise<RepoResult> => {
   return new Promise((resolve, reject) => {
     getRepoInfo(repo)
       .then((data: GithubRepository) => {
@@ -169,7 +154,7 @@ const calculateRepoStupidity = (repo: string): Promise<object> => {
           stars,
           forks,
           contributors,
-          stupidity: stupidity.toFixed(2)
+          stupidity
         });
       })
       .catch(err => {
@@ -181,7 +166,7 @@ const calculateRepoStupidity = (repo: string): Promise<object> => {
 /*
  * Calculate the stupidity of a language
  */
-const calculateLanguageStupidity = (language: string): Promise<object> => {
+const calculateLanguageStupidity = (language: string): Promise<LanguageResult> => {
   return new Promise((resolve, reject) => {
     ghAPICall(
       `/search/repositories?q=+language:${language}&sort=stars&order=desc&per_page=20`
@@ -217,6 +202,4 @@ const calculateLanguageStupidity = (language: string): Promise<object> => {
   });
 };
 
-module.exports.calculateRepoStupidity = calculateRepoStupidity;
-module.exports.calculateLanguageStupidity = calculateLanguageStupidity;
-module.exports.getRepoInfo = getRepoInfo;
+export { calculateRepoStupidity, calculateLanguageStupidity, getRepoInfo };
