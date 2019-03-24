@@ -28,9 +28,9 @@ interface GithubResponse {
  * Used to determine how many pages of contributors to request.
  */
 const getLastLink = (header: string): number => {
-  var regex = /page=(\d+)>; rel="last"/;
+  const regex = /page=(\d+)>; rel="last"/;
 
-  var match = regex.exec(header);
+  const match = regex.exec(header);
   if (match) {
     return parseInt(match[1]);
   }
@@ -126,9 +126,9 @@ const getRepoInfo = (repo: string): Promise<GithubRepository> => {
           .then((contributors: number) => {
             const data = result.data as GithubRepository;
             return resolve({
-              stargazers_count: data["stargazers_count"],
-              full_name: data["full_name"],
-              forks_count: data["forks_count"],
+              stargazers_count: data.stargazers_count,
+              full_name: data.full_name,
+              forks_count: data.forks_count,
               contributors
             });
           })
@@ -149,10 +149,10 @@ const calculateRepoStupidity = (repo: string): Promise<object> => {
   return new Promise((resolve, reject) => {
     getRepoInfo(repo)
       .then((data: GithubRepository) => {
-        const name: string = data["full_name"] as string;
-        const stars: number = data["stargazers_count"] as number;
-        const forks: number = data["forks_count"] as number;
-        const contributors: number = data["contributors"] as number;
+        const name: string = data.full_name as string;
+        const stars: number = data.stargazers_count as number;
+        const forks: number = data.forks_count as number;
+        const contributors: number = data.contributors as number;
         let stupidity: number;
 
         if (stars === 0) {
@@ -189,14 +189,14 @@ const calculateLanguageStupidity = (language: string): Promise<object> => {
       .then((result: GithubResponse) => {
         let urls: string[] = [];
         const data = result.data as GithubSearch;
-        const repos: GithubRepository[] = data["items"] as GithubRepository[];
+        const repos: GithubRepository[] = data.items as GithubRepository[];
         if (repos.length === 0) {
           return reject(new Error("No repositories found."));
         }
 
         // Get repo urls
         repos.map((repo: GithubRepository) => {
-          urls.push(repo["full_name"]);
+          urls.push(repo.full_name);
         });
 
         // Calculate the stupidity of all repositories
