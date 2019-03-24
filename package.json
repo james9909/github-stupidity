@@ -13,6 +13,10 @@
     "prettier": "prettier --write \"src/**/*.ts{,?}\"",
     "prettier-diff": "prettier --list-different \"src/**/*.tsx{,?}\""
   },
+  "jest": {
+    "collectCoverage": true,
+    "rootDir": "./src"
+  },
   "author": "James Wang",
   "license": "MIT",
   "dependencies": {

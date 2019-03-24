@@ -16,3 +16,6 @@ node_modules
 
 # Compiled typescript
 build/
+
+# Jest coverage files
+src/coverage/
