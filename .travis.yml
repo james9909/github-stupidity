@@ -1,10 +1,14 @@
 language: node_js
 node_js:
-    - "node"
+- node
 before_install:
-    - "npm install"
+- npm install
 script:
-    - "npm run build"
-    - "npm run test"
+- npm run build
+- npm run test
 notifications:
-    email: false
+  email: false
+deploy:
+  provider: heroku
+  api_key:
+    secure: U2w7L/yDdG6hNHZYj6rbnKHyxJ/xEe0gR6N+MCy4elUrFtVfxK4QBCTIkTETUmEvFvSyO/UoFvB5C0vCF2Oc5T9qKvZaVcKTh7fqmbhUmnbYG5KISV6xuc66JiuReR117lL7Xy259oHfN2RAuAgoxOOUHJ3Hp05p6RCdNzaECAAPwWFZqWHcXcLt27kspgNFoE3K+DYOzxZMCflA+thDVdVJ30/ese5ztXClSD1c51aLO+voy3ch80A5UivOfyhyYRLQFoX69PdXWsOcGtG5iQ2R3awAf5bAFFAV1kH9KyGoapZzmrCZSDjD12VGNe8ns6XuL80PB2atDJFZYrYxNYZF0y2mtdYvkZqa8g0vNZFqMHxNH3CGRGNv07+DVm/B65RrWAJe4+MoiA0ITECy393G8DIVXULqYg4YwCWaI22YAP55A3hyLM0C33KaS7POqePE8zxh1NdRkqdAtRmdYz3XAUY4RHEYJ/Qhe9ODFSQ653hHp/AaaWHV4tIqjJg9snui5BT3pmqNd91s8Y6w23uMzaNMGhwwx1L5rOOZKjdiBLeL4j8q+TYMpqLB0m7ccX34djGxhrGgZlYFJPLjHb530U1/TdkMyquLLJZG6LV00E6vYVRNEZATI9Yrb+1M1ToLYz4eIMAlrK6IqyOBXs5xJUVnfmHuzoKUCfGzSf8=
